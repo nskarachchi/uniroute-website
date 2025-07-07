@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Location</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="../home/home.css">
+    <style>
+        .map-container {
+            padding: 20px;
+        }
+        .back-button {
+            margin: 20px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .bus-info {
+            margin: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">UniRoute</div>
+        <button class="back-button" onclick="window.location.href='../home/home.php'">Back to Home</button>
+    </header>
+
+    <div class="bus-info" id="route-info">
+        <h2>Loading route information...</h2>
+    </div>
+
+    <div class="map-container">
+        <h3>Bus Location</h3>
+        <div id="map" style="height: 600px;"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get route_id from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const routeId = urlParams.get('route_id');
+            
+            if (!routeId) {
+                document.getElementById('route-info').innerHTML = '<h2>Error: No route specified</h2>';
+                return;
+            }
+            
+            // Initialize map
+            const map = L.map("map").setView([7.8731, 80.7718], 9);
+            
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: '© OpenStreetMap',
+            }).addTo(map);
+            
+            // Fetch route information
+            fetch(`../home/get_route.php?route_id=${routeId}`)
+                .then(response => response.json())
+                .then(routeData => {
+                    if (routeData.error) {
+                        document.getElementById('route-info').innerHTML = `<h2>Error: ${routeData.error}</h2>`;
+                        return;
+                    }
+                    
+                    document.getElementById('route-info').innerHTML = `
+                        <h2>Route ${routeData.route_id}</h2>
+                        <p><strong>Route:</strong> ${routeData.route}</p>
+                        <p><strong>Departure:</strong> ${routeData.depature}</p>
+                    `;
+                })
+                .catch(error => {
+                    console.error("Error loading route info:", error);
+                    document.getElementById('route-info').innerHTML = `
+                        <h2>Route ${routeId}</h2>
+                        <p>Unable to load route details.</p>
+                    `;
+                });
+            
+            // Fetch buses on this route
+            fetch(`bus_location.php?route_id=${routeId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error("Error:", data.error);
+                        return;
+                    }
+                    
+                    if (data.length === 0) {
+                        const noDataDiv = document.createElement('div');
+                        noDataDiv.className = 'bus-info';
+                        noDataDiv.innerHTML = '<p>No buses currently active on this route.</p>';
+                        document.querySelector('.map-container').appendChild(noDataDiv);
+                        return;
+                    }
+                    
+                    // Create bounds to fit all markers
+                    const bounds = L.latLngBounds();
+                    
+                    data.forEach(bus => {
+                        if (!bus.latitude || !bus.longitude) {
+                            console.warn(`Bus ${bus.bus_id} has no location data.`);
+                            return;
+                        }
+                        
+                        const busMarker = L.marker([bus.latitude, bus.longitude])
+                            .addTo(map)
+                            .bindPopup(`
+                                <b>Bus ${bus.bus_id}</b><br>
+                                Status: ${bus.status}<br>
+                                <button onclick="goToSeatBooking(${bus.bus_id})">Book a Seat</button>
+                            `);
+                        
+                        // Add this location to bounds
+                        bounds.extend([bus.latitude, bus.longitude]);
+                    });
+                    
+                    // Adjust map to show all buses
+                    if (bounds.isValid()) {
+                        map.fitBounds(bounds);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error loading buses:", error);
+                });
+        });
+        
+        function goToSeatBooking(busId) {
+            window.location.href = `../seat_reservation/index.php?bus_id=${busId}`;
+        }
+    </script>
+    
+    <div class="footer">
+        © 2025 UniRoute | Shuttle Management System
+    </div>
+</body>
+</html>

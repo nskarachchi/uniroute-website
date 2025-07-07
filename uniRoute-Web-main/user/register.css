@@ -1,0 +1,240 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {            
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url('../resources/nsbmBG.jpg');
+    background-size: cover;
+    background-position: center;            
+    padding: 20px;
+    flex-direction: column;
+}
+
+.wrap {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    background: white;
+    opacity: 85%;
+    border: 2px solid rgba(255, 255, 255, .5);
+    border-radius: 20px;
+    box-shadow: 0 0 30px white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+
+.logoUP{
+    width: 30%;
+    margin-left: 25%;
+    margin-right: 25%;
+    max-width: 500px;
+    display: flex;
+    padding: 20px;
+}
+
+.form-box {
+    width: 100%;
+    padding: 20px;
+}
+
+.form-box h2 {
+    font-size: 1.8em;
+    color: black;
+    text-align: center;
+}
+
+.input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    border-bottom: 2px solid;
+    margin: 20px 0;
+    color: black;
+}
+
+.input-box label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    font-size: 1em;
+    color: black;
+    pointer-events: none;
+    font-weight: 600;
+    transition: .5s;
+}
+
+.input-box input {
+    height: 100%;
+    width: calc(100% - 30px);
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    font-weight: 500;
+    color: black;
+    padding-left: 5px;
+}
+
+.input-box input:focus ~ label,
+.input-box input:valid ~ label {
+    top: -5px;
+}
+
+.input-box .material-symbols-outlined {
+    position: absolute;
+    right: 8px;
+    font-size: 1.2em;
+    color: black;
+    line-height: 50px;
+}
+
+.checkbox {
+    font-size: 1em;
+    color: black;
+    font-weight: 500;
+    margin: -10px 0 15px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.checkbox input {
+    margin-right: 10px;
+}
+
+.btn {
+    width: 100%;
+    height: 45px;
+    cursor: pointer;
+    background: black;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.3em;
+    font-weight: 600; 
+    color: white;
+}
+
+.login-reg {
+    font-size: 1em;
+    text-align: center;
+    margin: 20px 0 10px;
+    font-weight: 500;
+    padding-top: 15px;
+}
+
+.login-reg a {
+    color: darkblue;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.login-reg a:hover {
+    color: red;
+    transition: .3s;
+}
+
+/* Modal Background */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Styling */
+.modal-content button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-content button:hover {
+    background-color: #0056b3;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wrap {
+        width: 90%;
+        height: auto;
+        padding: 15px;
+    }
+
+    .form-box {
+        padding: 15px;
+    }
+
+    .form-box h2 {
+        font-size: 1.5em;
+    }
+
+    .input-box label, .input-box input {
+        font-size: 0.9em;
+    }
+
+    .btn {
+        font-size: 1.2em;
+    }
+
+    .checkbox {
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 480px) {
+    .wrap {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .form-box h2 {
+        font-size: 1.3em;
+    }
+
+    .input-box {
+        margin: 15px 0;
+    }
+
+    .input-box label, .input-box input {
+        font-size: 0.85em;
+    }
+
+    .btn {
+        font-size: 1em;
+        height: 40px;
+    }
+}
